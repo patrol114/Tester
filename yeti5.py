@@ -130,8 +130,8 @@ def train_classification_model(train_data, train_labels):
 def generate_text(prompt, model, tokenizer):
     if not tokenizer.pad_token:
         tokenizer.pad_token = tokenizer.eos_token
-    inputs = tokenizer(prompt, return_tensors="pt", padding=True, truncation=True, max_length=512).to("cpu")
-    outputs = model.generate(inputs.input_ids, max_length=100, num_return_sequences=1, do_sample=True, top_p=0.95)
+    inputs = tokenizer(prompt, return_tensors="pt", padding=True, truncation=True, max_length=1024).to("cpu")
+    outputs = model.generate(inputs.input_ids, max_length=300, num_return_sequences=1, do_sample=True, top_p=0.95)
     generated_text = tokenizer.decode(outputs[0])
     return generated_text
 
