@@ -234,16 +234,9 @@ if __name__ == '__main__':
         gc.collect()
 
         # Text generation
-        prompt = "conversion to tensors: i will make sure that train_data and val_data are in the correct format before converting to tensors.. create script"
+        prompt = "conversion to tensors: I will make sure that train_data and val_data are in the correct format before converting to tensors.. create script"
         print(f"Wygenerowany text przez prompt: {prompt}")
-
         generated_text_result = generate_text(prompt, generation_model, generation_tokenizer)
 
-        # Display the results
-        table = PrettyTable()
-        table.field_names = ["Prompt", "Generated Text"]
-        table.add_row([prompt, generated_text_result])
-
-        print(table)
         # Display the results and allow for further queries
         display_results_and_ask_questions(generated_text_result)
