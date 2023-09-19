@@ -219,8 +219,8 @@ def display_results_and_ask_questions(generated_text_result):
 if __name__ == '__main__':
     with torch.no_grad():
         # Wyświetlenie nazw modeli
-        print("Ładowanie modelu klasyfikacji: openai-gpt...")
-        print("Ładowanie modelu generacji: Deci/DeciLM-6b...")
+        print("Ładowanie modelu klasyfikacji: bert-base-cased...")
+        print("Ładowanie modelu generacji: gpt2-xl..")
 
         # Ładowanie modeli i tokenizerów
         classification_model, classification_tokenizer = load_model("bert-base-cased", "classification")
