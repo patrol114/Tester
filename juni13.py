@@ -154,19 +154,17 @@ def process_data(data, classification_model, classification_tokenizer, generatio
     return processed_data
 
 def train_classification_model(train_data, train_labels):
-    if not train_data or all(not d for d in train_data):
+    if train_data.size == 0 or all(not d for d in train_data):  # Zmienione tutaj
         logging.error("Training data is empty or contains only stop words. Cannot train the model.")
         return None
-    # Ulepszenie 1: Użycie TfidfVectorizer zamiast CountVectorizer
-    # Ulepszenie 2: Optymalizacja hiperparametrów (alfa=0.5)
     model = make_pipeline(TfidfVectorizer(), MultinomialNB(alpha=0.5))
     
-    # Ulepszenie 3: Dodanie długości tekstu jako dodatkowej cechy
     text_lengths = np.array([len(text) for text in train_data]).reshape(-1, 1)
     features = np.concatenate([text_lengths], axis=1)
     
     model.fit(features, train_labels)
     return model
+
 
 
 def generate_text(prompt, model, tokenizer):
