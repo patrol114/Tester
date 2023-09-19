@@ -136,7 +136,7 @@ def analyze_sentiment(text, model, tokenizer):
     sentiment_analyzer = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer)
     return sentiment_analyzer(text)[0]
 
-def process_data(data, classification_model, classification_tokenizer, generation_model, generation_tokenizer, batch_size=50):
+def process_data(data, classification_model, classification_tokenizer, generation_model, generation_tokenizer, batch_size=100):
     processed_data = []
     for i in range(0, len(data), batch_size):
         batch_data = data[i:i+batch_size]
@@ -167,7 +167,7 @@ def generate_text(prompt, model, tokenizer):
         tokenizer.pad_token = tokenizer.eos_token
     inputs = tokenizer(prompt, return_tensors="pt", padding=True, truncation=True, max_length=512).to("cpu")
     attention_mask = inputs['attention_mask']  # Dodane
-    outputs = model.generate(inputs.input_ids, attention_mask=attention_mask, max_length=512, num_return_sequences=1, do_sample=True, top_p=0.85, temperature=0.6)
+    outputs = model.generate(inputs.input_ids, attention_mask=attention_mask, max_length=512, num_return_sequences=2, do_sample=True, top_p=0.85, temperature=0.7)
     generated_text = tokenizer.decode(outputs[0])
     return generated_text
 
@@ -223,8 +223,8 @@ if __name__ == '__main__':
         print("Ładowanie modelu generacji: Deci/DeciLM-6b...")
 
         # Ładowanie modeli i tokenizerów
-        classification_model, classification_tokenizer = load_model("openai-gpt", "classification")
-        generation_model, generation_tokenizer = load_model("Deci/DeciLM-6b", "generation")
+        classification_model, classification_tokenizer = load_model("bert-base-cased", "classification")
+        generation_model, generation_tokenizer = load_model("gpt2-xl", "generation")
 
         # Ładowanie i wyświetlanie danych
         print("Ładowanie danych treningowych...")
