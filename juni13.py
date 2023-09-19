@@ -24,6 +24,7 @@ from sklearn.preprocessing import LabelEncoder
 logging.basicConfig(level=logging.INFO)
 import numpy as np
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score, roc_curve, auc, classification_report
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 # Initialize stemmer and lemmatizer
 stemmer = PorterStemmer()
@@ -156,10 +157,16 @@ def train_classification_model(train_data, train_labels):
     if not train_data or all(not d for d in train_data):
         logging.error("Training data is empty or contains only stop words. Cannot train the model.")
         return None
-    model = make_pipeline(CountVectorizer(), MultinomialNB())
-    model.fit(train_data, train_labels)
+    # Ulepszenie 1: Użycie TfidfVectorizer zamiast CountVectorizer
+    # Ulepszenie 2: Optymalizacja hiperparametrów (alfa=0.5)
+    model = make_pipeline(TfidfVectorizer(), MultinomialNB(alpha=0.5))
+    
+    # Ulepszenie 3: Dodanie długości tekstu jako dodatkowej cechy
+    text_lengths = np.array([len(text) for text in train_data]).reshape(-1, 1)
+    features = np.concatenate([text_lengths], axis=1)
+    
+    model.fit(features, train_labels)
     return model
-
 
 
 def generate_text(prompt, model, tokenizer):
@@ -251,7 +258,11 @@ if __name__ == '__main__':
 
         # Trenowanie i ewaluacja modelu klasyfikacji
         print("Rozpoczynam trenowanie modelu klasyfikacji...")
-        classification_model_sklearn = train_classification_model(cleaned_data, labels)
+        # Dodajemy długość tekstu jako dodatkową cechę
+        cleaned_data_lengths = np.array([len(text) for text in cleaned_data]).reshape(-1, 1)
+        features = np.concatenate([cleaned_data_lengths], axis=1)
+        
+        classification_model_sklearn = train_classification_model(features, labels)
         if classification_model_sklearn:
             accuracy = evaluate_classification_model(classification_model_sklearn, cleaned_data, labels)
             print(f"Dokładność modelu klasyfikacji: {accuracy}")
